@@ -1,0 +1,7 @@
+api/
+.env
+__pycache__/
+testimage.png
+.deta*/
+.detaignore
+.DS_Store
