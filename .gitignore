@@ -1,7 +1,17 @@
+# pyenv and environment variable
 api/
 .env
+
+#ignore terraform for now
+terraform/
+
+# don't ignore dockerfile
+!Dockerfile
+
+#ignore github action for now
+.github/fastapi-deploy.yml
+
+# misc
 __pycache__/
 testimage.png
-.deta*/
-.detaignore
 .DS_Store
