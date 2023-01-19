@@ -3,6 +3,7 @@ import os
 from io import BytesIO
 
 import torch
+import uvicorn
 from diffusers import StableDiffusionPipeline
 from dotenv import load_dotenv
 from fastapi import FastAPI, Request, Response, status
@@ -74,3 +75,7 @@ def generate(
     imgstr = base64.b64encode(buffer.getvalue())
 
     return Response(content=imgstr, media_type="image/png")
+
+
+if __name__ == "__main__":
+    uvicorn.run("main:app", port=8000, log_level="info")
