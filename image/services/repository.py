@@ -1,7 +1,7 @@
 from bson import ObjectId
 from pymongo.errors import WriteError
 
-import image.main as greens
+import image.main as image
 from image.routers.exceptions import AlreadyExistsHTTPException
 
 
@@ -45,3 +45,16 @@ async def get_mongo_meta() -> dict:
         list_of_collections[db] = await image.app.state.mongo_client[db].list_collection_names()
     mongo_meta = await image.app.state.mongo_client.server_info()
     return {"version": mongo_meta["version"], "databases": list_databases, "collections": list_of_collections}
+
+
+# async def add_document(payload: Document):
+#     """
+
+#     :param payload:
+#     :return:
+#     """
+#     try:
+#         payload = jsonable_encoder(payload)
+#         return await create_document(payload, collection)
+#     except ValueError as exception:
+#         raise NotFoundHTTPException(msg=str(exception))

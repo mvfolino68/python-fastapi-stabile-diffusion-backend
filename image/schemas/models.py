@@ -28,3 +28,13 @@ class Document(BaseModel):
 
 class DocumentResponse(Document):
     id: ObjectIdField = Field(...)
+
+class PipelineData(BaseModel):
+    """ Data class for the pipeline """
+    prompt: str
+    num_inference_steps: int
+    negative_prompt: str = None
+
+class ImageData(BaseModel):
+    """ Data class for the image """
+    image_base64: str

@@ -1,7 +1,7 @@
 import logging
 from functools import lru_cache
+import pymongo
 
-from motor.motor_asyncio import AsyncIOMotorClient
 from rich.console import Console
 from rich.logging import RichHandler
 
@@ -37,10 +37,10 @@ async def init_mongo(db_name: str, db_url: str, collection: str):
     Returns:
 
     """
-    mongo_client = AsyncIOMotorClient(db_url)
+    mongo_client = pymongo.MongoClient(db_url)
     mongo_database = mongo_client[db_name]
     mongo_collections = {
-        collection: mongo_database.get_collection(collection),
+        collection: collection,
     }
-    # return {0: mongo_client, 1: mongo_database, 2: mongo_collections}
+    # return {0: client, 1: db, 2: collection}
     return mongo_client, mongo_database, mongo_collections

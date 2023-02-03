@@ -28,13 +28,20 @@ class Settings(BaseSettings):
     down: str = os.getenv("DOWN", "down")
     web_server: str = os.getenv("WEB_SERVER", "web_server")
 
-    db_url: str = os.getenv("MONGO_URL", "")
-    db_name: str = os.getenv("MONGO_DB", "")
-    collection: str = os.getenv("MONGO_COLLECTION", "")
+    db_url: str = os.getenv("MONGO_URL", "mongodb+srv://mongodbuser:ABCabc123@cluster0.6lnrsjg.mongodb.net/?retryWrites=true&w=majority")
+    db_name: str = os.getenv("MONGO_DB", "stable-diffussion-backend")
+    collection: str = os.getenv("MONGO_COLLECTION", "requests-responses")
     test_db_name: str = os.getenv("MONGO_TEST_DB", "")
+
+    huggingface_api_key: str = os.getenv("HUGGINGFACE_API", "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")
+
+    # class Config:
+    #     env_file = ".env"
 
 
 @lru_cache
-def get_settings():
+def get_settings(_env_file='.env'):
     logger.info("Loading config settings from the environment...")
+    settings = Settings()
+    print("db_url" + settings.db_url)
     return Settings()
