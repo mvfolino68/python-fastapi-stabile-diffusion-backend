@@ -56,22 +56,22 @@ async def add_document(payload: Document):
     except ValueError as exception:
         raise NotFoundHTTPException(msg=str(exception))
 
+# cannot have two get functions for same endpoint
+# @router.get(
+#     "/{object_id}",
+#     response_description="Document retrieved",
+#     response_model=DocumentResponse,
+# )
+# async def get_document(object_id: ObjectIdField):
+#     """
 
-@router.get(
-    "/{object_id}",
-    response_description="Document retrieved",
-    response_model=DocumentResponse,
-)
-async def get_document(object_id: ObjectIdField):
-    """
-
-    :param object_id:
-    :return:
-    """
-    try:
-        return await retrieve_document(object_id, collection)
-    except ValueError as exception:
-        raise NotFoundHTTPException(msg=str(exception))
+#     :param object_id:
+#     :return:
+#     """
+#     try:
+#         return await retrieve_document(object_id, collection)
+#     except ValueError as exception:
+#         raise NotFoundHTTPException(msg=str(exception))
 
 
 # TODO: PUT for replace aka set PATCH for update ?

@@ -4,10 +4,12 @@ from functools import lru_cache
 from pydantic import BaseSettings
 
 from image.utils import get_logger
+from dotenv import load_dotenv
 
 logger = get_logger(__name__)
 
-
+# load environment variables
+load_dotenv()
 class Settings(BaseSettings):
     """
 
@@ -28,15 +30,12 @@ class Settings(BaseSettings):
     down: str = os.getenv("DOWN", "down")
     web_server: str = os.getenv("WEB_SERVER", "web_server")
 
-    db_url: str = os.getenv("MONGO_URL", "mongodb+srv://mongodbuser:ABCabc123@cluster0.6lnrsjg.mongodb.net/?retryWrites=true&w=majority")
-    db_name: str = os.getenv("MONGO_DB", "stable-diffussion-backend")
-    collection: str = os.getenv("MONGO_COLLECTION", "requests-responses")
+    db_url: str = os.getenv("MONGO_URL", "")
+    db_name: str = os.getenv("MONGO_DB", "")
+    collection: str = os.getenv("MONGO_COLLECTION", "")
     test_db_name: str = os.getenv("MONGO_TEST_DB", "")
 
-    huggingface_api_key: str = os.getenv("HUGGINGFACE_API", "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")
-
-    # class Config:
-    #     env_file = ".env"
+    huggingface_api_key: str = os.getenv("")
 
 
 @lru_cache
