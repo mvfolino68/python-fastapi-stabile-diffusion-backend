@@ -3,3 +3,8 @@ __pycache__/
 testimage.png
 .DS_Store
 terraform/
+
+.env.example
+tests/
+.github/
+README.md
