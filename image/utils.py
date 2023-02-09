@@ -40,7 +40,7 @@ async def init_mongo(db_name: str, db_url: str, collection: str):
     mongo_client = pymongo.MongoClient(db_url)
     mongo_database = mongo_client[db_name]
     mongo_collections = {
-        collection: collection,
+        collection: mongo_database.get_collection(collection),
     }
     # return {0: client, 1: db, 2: collection}
     return mongo_client, mongo_database, mongo_collections

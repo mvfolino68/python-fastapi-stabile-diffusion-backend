@@ -1,21 +1,32 @@
-from fastapi.testclient import TestClient
+from typing import AsyncGenerator
 
-from main import app,get_db_session
+import pytest
+from httpx import AsyncClient
 
-testing_db = ["DB for testing"]
+from image import config
+from image.main import app, init_mongo
+from image.utils import get_logger
 
-
-def get_testing_db():
-    return testing_db 
-
-
-app.dependency_overrides[get_db_session] = get_testing_db
-client = TestClient(app)
+global_settings = config.get_settings()
 
 
-def test_item_should_add_to_database():
-    response = client.get(
-        "/add-item/?item=sugar",
-    )
-    assert response.status_code == 200
-    assert response.text == '{"message":"added item sugar"}'
+@pytest.fixture(
+    params=[
+        pytest.param(("asyncio", {"use_uvloop": True}), id="asyncio+uvloop"),
+    ]
+)
+def anyio_backend(request):
+    return request.param
+
+
+@pytest.fixture
+async def client() -> AsyncGenerator:
+    async with AsyncClient(
+        app=app,
+        base_url="http://testserver",
+    ) as client:
+        app.state.logger = get_logger(__name__)
+        app.state.mongo_client, app.state.mongo_db, app.state.mongo_collection = await init_mongo(
+            global_settings.test_db_name, global_settings.db_url, global_settings.collection
+        )
+        yield client

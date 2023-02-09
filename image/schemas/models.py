@@ -35,6 +35,6 @@ class PipelineData(BaseModel):
     num_inference_steps: int
     negative_prompt: str = None
 
-class ImageData(BaseModel):
-    """ Data class for the image """
+class ImageData(PipelineData):
+    """ Data class for the image payload saved from the pipeline """
     image_base64: str
