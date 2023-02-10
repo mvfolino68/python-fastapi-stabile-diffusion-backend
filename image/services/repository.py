@@ -87,6 +87,12 @@ async def generate_pipeline_image(pipeline_data: PipelineData) -> ImageData:
         # torch_dtype=torch.float16,
         use_auth_token=HUGGINGFACE_TOKEN,
     )
+
+    def dummy(images, **kwargs):
+        return images, False
+
+    pipe.safety_checker = dummy
+
     if torch.cuda.is_available():
         device = "cuda"
         pipe = pipe.to(device)
