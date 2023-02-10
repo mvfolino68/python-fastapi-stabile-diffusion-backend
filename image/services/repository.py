@@ -31,8 +31,10 @@ async def retrieve_document(document_id: str, collection: str) -> dict:
     :return:
     """
     document_filter = {"_id": ObjectId(document_id)}
-    if document := image.app.state.mongo_collection[collection].find_one(document_filter):
-        return document_id_helper(document)
+    if document := image.app.state.mongo_collection[collection].find_one(
+        document_filter
+    ):
+        return await document_id_helper(document)
     else:
         raise ValueError(f"No document found for {document_id=} in {collection=}")
 
@@ -48,42 +50,46 @@ async def create_document(document: dict, collection: str) -> dict:
         document = image.app.state.mongo_collection[collection].insert_one(document)
         return await retrieve_document(document.inserted_id, collection)
     except WriteError:
-        raise AlreadyExistsHTTPException(f"Document with {document.inserted_id=} already exists")
+        raise AlreadyExistsHTTPException(
+            f"Document with {document.inserted_id=} already exists"
+        )
 
 
 async def get_mongo_meta() -> dict:
     list_databases = await image.app.state.mongo_client.list_database_names()
     list_of_collections = {}
     for db in list_databases:
-        list_of_collections[db] = await image.app.state.mongo_client[db].list_collection_names()
+        list_of_collections[db] = await image.app.state.mongo_client[
+            db
+        ].list_collection_names()
     mongo_meta = await image.app.state.mongo_client.server_info()
-    return {"version": mongo_meta["version"], "databases": list_databases, "collections": list_of_collections}
-
-
+    return {
+        "version": mongo_meta["version"],
+        "databases": list_databases,
+        "collections": list_of_collections,
+    }
 
 
 # Set up diffusion pipeline global settings
 HUGGINGFACE_TOKEN = global_settings.huggingface_api_key
+model_id = "models"
 model_id = "runwayml/stable-diffusion-v1-5"
 
 
-async def generate_pipeline_image(pipeline_data: PipelineData)->ImageData:
-    '''
+async def generate_pipeline_image(pipeline_data: PipelineData) -> ImageData:
+    """
 
     Generates a pipeline and returns a ImageData object
-    '''
-    device = "cpu"
+    """
     pipe = StableDiffusionPipeline.from_pretrained(
         model_id,
         # revision="fp16",
         # torch_dtype=torch.float16,
         use_auth_token=HUGGINGFACE_TOKEN,
-        custom_pipeline="lpw_stable_diffusion",
     )
-
     if torch.cuda.is_available():
         device = "cuda"
-        pipe = pipe.to("device")
+        pipe = pipe.to(device)
         pipe.enable_xformers_memory_efficient_attention()
 
     prompt = pipeline_data.prompt
@@ -99,8 +105,11 @@ async def generate_pipeline_image(pipeline_data: PipelineData)->ImageData:
     buffer = BytesIO()
     image.save(buffer, format="PNG")
     imgstr = base64.b64encode(buffer.getvalue())
-    image_data = ImageData(prompt=prompt,num_inference_steps=num_inference_steps, negative_prompt=negative_prompt, image_base64=imgstr)
-
+    image_data = ImageData(
+        prompt=prompt,
+        num_inference_steps=num_inference_steps,
+        negative_prompt=negative_prompt,
+        image_base64=imgstr,
+    )
 
     return image_data
-

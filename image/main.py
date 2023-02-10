@@ -15,26 +15,20 @@ if global_settings.environment == "local":
     get_logger("uvicorn")
 
 
-
 app = FastAPI()
 
 app.include_router(v1, prefix="/api/v1")
-
-# add CORS middleware
-app.add_middleware(
-    CORSMiddleware,
-    allow_credentials=True,
-    allow_origins=["*"],
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
 
 
 @app.on_event("startup")
 async def startup_event():
     app.state.logger = get_logger(__name__)
     app.state.logger.info("Starting image generator...mmm")
-    app.state.mongo_client, app.state.mongo_db, app.state.mongo_collection = await init_mongo(
+    (
+        app.state.mongo_client,
+        app.state.mongo_db,
+        app.state.mongo_collection,
+    ) = await init_mongo(
         global_settings.db_name, global_settings.db_url, global_settings.collection
     )
 
@@ -43,6 +37,14 @@ async def startup_event():
     app.state.limiter = limiter
     app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
+    # add CORS middleware
+    app.add_middleware(
+        CORSMiddleware,
+        allow_credentials=True,
+        allow_origins=["*"],
+        allow_methods=["*"],
+        allow_headers=["*"],
+    )
 
 
 @app.on_event("shutdown")
@@ -59,6 +61,3 @@ async def health_check():
     # except Exception:
     #     app.state.logger.exception("My way or highway...")
     return await get_mongo_meta()
-
-
-

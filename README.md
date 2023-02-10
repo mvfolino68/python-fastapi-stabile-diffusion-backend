@@ -7,6 +7,7 @@ Example of an API for Stable Diffusion inference using FastAPI and Hugging Face.
 - [Python FastAPI backend for Stable Diffusion](#python-fastapi-backend-for-stable-diffusion)
   - [Documentation](#documentation)
     - [Installing](#installing)
+    - [Dockerfile](#dockerfile)
     - [Tutorials](#tutorials)
     - [API Reference](#api-reference)
 
@@ -26,12 +27,12 @@ Example of an API for Stable Diffusion inference using FastAPI and Hugging Face.
    pip install -r requirements.txt
    ```
 
-3. create .env file using the `.env.example` provided. 
+3. create .env file using the `.env.example` provided.
+
    1. Create an API key from Hugging Face. [More information](https://huggingface.co/docs/hub/security-tokens)
       1. paste the API key into the environment file.
    2. Sign up for a free MongoDB account, create a cluster, database and collection. [More information](https://www.mongodb.com/docs/atlas/)
       1. paste the connection values into the environment file.
-
 
 4. Start the API
 
@@ -56,6 +57,15 @@ Example of an API for Stable Diffusion inference using FastAPI and Hugging Face.
    ```
 
 [Image prompt help](https://towardsdatascience.com/a-beginners-guide-to-prompt-design-for-text-to-image-generative-models-8242e1361580)
+
+### Dockerfile
+
+Working on mounting a volume to avoud having to download the model with each build or new image. Will need to update the `model_id` in the `repository.py` file when testings. Currently the container stops when using mounted volume for model.
+
+without docker the local model works fine.
+
+Create a docker image with `docker build -t fastapi-example .`
+Run the docker image with `docker run -v $(pwd)/models:/app/models -d -p 8000:8000 fastapi-example`
 
 ### Tutorials
 

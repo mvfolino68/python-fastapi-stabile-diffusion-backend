@@ -15,3 +15,5 @@ terraform/
 __pycache__/
 testimage.png
 .DS_Store
+models/
+

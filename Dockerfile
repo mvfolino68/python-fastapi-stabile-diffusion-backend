@@ -1,4 +1,5 @@
-FROM tiangolo/uvicorn-gunicorn-fastapi:python3.11
+#FROM tiangolo/uvicorn-gunicorn-fastapi:python3.11
+FROM python:3.8.1-buster
 # Image from dockerhub
 
 
@@ -8,13 +9,13 @@ ENV PYTHONUNBUFFERED 1
 WORKDIR /app
 # Make /app as a working directory in the container
 
+COPY ./requirements.txt .
+RUN pip install --no-cache-dir --upgrade -r requirements.txt
+# Install the dependencies
+
 COPY ./image ./image
 COPY ./.env . 
 # Copy everything from ./src directory to /app in the container
-
-COPY ./requirements.txt .
-RUN pip install -r requirements.txt 
-# Install the dependencies
 
 EXPOSE 8000
 # Expose the required port

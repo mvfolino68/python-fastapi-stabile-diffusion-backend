@@ -8,3 +8,5 @@ terraform/
 tests/
 .github/
 README.md
+
+models/
